@@ -45,4 +45,42 @@ def calculate_metrics(y_true, y_pred):
     }
 
 
-__all__ = ["calculate_confusion_matrix", "calculate_metrics"]
+def metrics_at_threshold(y_true, p1, threshold):
+    """Calcula a matriz de confusão e as métricas para um limiar de decisão
+    sobre P(Y=1|x), reaproveitando calculate_metrics."""
+    p1 = np.asarray(p1, dtype=float)
+    y_pred = (p1 >= threshold).astype(int)
+    return calculate_metrics(y_true, y_pred)
+
+
+def roc_curve_auc(y_true, p1):
+    """Calcula a curva ROC (FPR, TPR) e a AUC a partir de P(Y=1|x).
+
+    Retorna (fpr, tpr, auc), com fpr/tpr ordenados por limiar decrescente
+    (do ponto (0,0) ao (1,1)).
+    """
+    y_true = np.asarray(y_true, dtype=int)
+    p1 = np.asarray(p1, dtype=float)
+
+    order = np.argsort(-p1)
+    y_sorted = y_true[order]
+
+    n_pos = int(np.sum(y_true == 1))
+    n_neg = int(np.sum(y_true == 0))
+    if n_pos == 0 or n_neg == 0:
+        raise ValueError("roc_curve_auc requer ao menos uma observação de cada classe.")
+
+    tps = np.cumsum(y_sorted == 1)
+    fps = np.cumsum(y_sorted == 0)
+    tpr = np.concatenate([[0.0], tps / n_pos])
+    fpr = np.concatenate([[0.0], fps / n_neg])
+    auc = float(np.trapezoid(tpr, fpr))
+    return fpr, tpr, auc
+
+
+__all__ = [
+    "calculate_confusion_matrix",
+    "calculate_metrics",
+    "metrics_at_threshold",
+    "roc_curve_auc",
+]

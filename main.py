@@ -5,19 +5,19 @@ from src.plots import plot_univariate_distributions, plot_confusion_matrix
 
 def main():
     print("==================================================")
-    print("   CLASSIFICADOR NAIVE BAYES - POKÉMON GO   ")
+    print("   CLASSIFICADOR NAIVE BAYES - LENDÁRIOS POKÉMON   ")
     print("==================================================\n")
-    
+
     # 1. Carregamento dos dados via Kaggle / Local
     print("[1/4] Carregando base de dados...")
     X_train, X_test, y_train, y_test = load_data(seed=42)
     print(f"-> Treino: {len(X_train)} amostras | Teste: {len(X_test)} amostras\n")
-    
+
     # 2. Treinamento do modelo
     print("[2/4] Ajustando distribuições e treinando Naive Bayes...")
     model = PokemonNaiveBayes(alpha=1.0)
     model.fit(X_train, y_train)
-    print("-> Priors P(Y):", {c: round(p, 4) for c, p in model.priors.items()})
+    print("-> Priors P(Y):", {c: round(p, 4) for c, p in model.priors_.items()})
     print("-> Parâmetros ajustados com sucesso!\n")
     
     # 3. Predição e Métricas
@@ -40,8 +40,7 @@ def main():
     
     # 4. Geração de Gráficos para o README e Apresentação
     print("[4/4] Gerando gráficos univariados e matriz em 'docs/assets/'...")
-    plot_univariate_distributions(X_train, y_train, 'base_attack')
-    plot_univariate_distributions(X_train, y_train, 'base_capture_rate')
+    plot_univariate_distributions(X_train, y_train, 'base_stat_total')
     plot_confusion_matrix(results['matrix'])
     
     print("-> Sucesso! Todos os gráficos foram salvos na pasta 'docs/assets/'.\n")

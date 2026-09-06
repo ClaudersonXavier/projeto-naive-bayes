@@ -1,0 +1,10 @@
+# Dependências do Estudo Dirigido - Classificador Naive Bayes (Lendários Pokémon)
+# Instalação: pip install -r requirements.txt
+
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+
+# Download automático da base a partir do Kaggle (opcional:
+# o projeto reutiliza data/pokemon.csv quando já existe localmente)
+kagglehub>=0.3
