@@ -191,14 +191,6 @@ Numa base 88/12, um classificador que nunca aprende nada já acerta 88,1% só ch
 - **Falsos Positivos (13):** quase todos têm `growth_rate=slow` combinado com tipos de $\Lambda$ alto (Dragão, Psíquico, Aço, Lutador) — casos onde as evidências de $X_2$/$X_3$ são fortes o bastante para o modelo errar a favor de "lendário" mesmo sem ser.
 - **Falsos Negativos (4):** incluem `Cosmog` (`base_stat_total=200`), um mítico "pré-evolução" com status de bebê — um outlier real da própria mecânica do jogo, difícil de acertar com qualquer uma das 3 características usadas.
 
----
-
-## ⚠️ Limitações da Modelagem
-
-- **Violação da independência condicional:** `type_1` e `growth_rate` têm correlação moderada dentro de cada classe (V de Cramér ≈ 0,27–0,37) — o Naive Bayes assume independência, então essa violação tende a deixar as probabilidades a posteriori mal calibradas (embora a decisão final costume continuar razoável).
-- **Escolha da distribuição de `base_stat_total`:** a Normal e a Gamma têm log-verossimilhança quase empatada na classe lendária/mítica (diferença de ~1,3 nats) — mantivemos a Normal por simplicidade e por ainda apresentar bom ajuste (KS 0,10–0,22 nas duas classes), mas não é uma vitória decisiva.
-- **Formas alternativas (Mega, Gigamax, regionais):** contam como observações à parte na base e distorcem um pouco a cauda da distribuição de `base_stat_total` em Y=1 (pico artificial em 600).
-- **Prior fortemente desbalanceado:** evidências individuais fortes (ex.: $\Lambda_{\text{slow}}=5,67$) não bastam para reverter sozinhas a classe majoritária — só a combinação das três evidências consegue.
 
 ---
 
@@ -210,9 +202,6 @@ Numa base 88/12, um classificador que nunca aprende nada já acerta 88,1% só ch
 │   └── pokemon.csv                      # Base baixada do Kaggle (gerado na 1ª execução)
 ├── docs/
 │   ├── assets/                          # GIF do banner e todos os gráficos gerados
-│   ├── estudo dirigido/                 # PDF do enunciado da atividade
-│   ├── roteiro_video.docx               # Roteiro cronometrado do vídeo (falas por slide)
-│   └── roteiro_video.md                 # Checklist dos 20 itens obrigatórios do vídeo
 ├── src/
 │   ├── data_loader.py                   # Download/leitura da base e divisão treino/teste
 │   ├── bayes_univariado.py              # Distribuições, Λ(x), fronteiras e regras de decisão
@@ -256,26 +245,3 @@ Ao buscar pelo nome, a saída informa se o Pokémon estava no treino ou no teste
 
 Na primeira execução, `data_loader.py` baixa a base automaticamente do Kaggle via `kagglehub` e salva em `data/pokemon.csv`; execuções seguintes reutilizam o arquivo local.
 
----
-
-## 🎬 Vídeo de Apresentação
-
-`<link a preencher após a gravação>`
-
-Dois documentos de apoio, complementares:
-
-- [`docs/roteiro_video.docx`](docs/roteiro_video.docx) — **roteiro cronometrado**: quem fala o quê, em qual slide e em que minuto, com orçamento de tempo por bloco (alvo 13:50 dentro do teto de 15:00).
-- [`docs/roteiro_video.md`](docs/roteiro_video.md) — **checklist** dos 20 itens de conteúdo obrigatório (§10 do enunciado) com o número, gráfico ou seção que sustenta cada um.
-
----
-
-## 🤖 Declaração de Uso de IA Generativa
-
-> **Rascunho para a dupla revisar antes da entrega** — o texto abaixo descreve o processo de desenvolvimento tal como ocorreu nesta conversa; ajustem conforme o que cada integrante efetivamente validou.
-
-Foi utilizado o assistente Claude Code (Anthropic) como ferramenta de apoio ao longo de todo o desenvolvimento. De forma geral:
-
-- **Delegado à IA:** validação da base de dados original (identificação de que `base_capture_rate` da base inicialmente escolhida era constante, sem informação real), pesquisa e comparação de bases alternativas, implementação do código (`src/`, os três scripts de entrada), experimentos estatísticos (ajuste de distribuições, sensibilidade de hiperparâmetros, varredura de limiar, curva ROC) e a redação desta documentação.
-- **Decidido pela dupla:** a escolha final da base e do trio de características (com a intuição de que os tipos Psíquico/Dragão seriam bons discriminadores, confirmada quantitativamente), a aprovação explícita de cada etapa do desenvolvimento antes da implementação, e a revisão dos resultados apresentados aqui.
-
-Todo o código foi executado e os resultados numéricos foram conferidos passo a passo ao longo do desenvolvimento (cada fase teve seus números validados contra cálculos independentes antes de prosseguir para a próxima).
