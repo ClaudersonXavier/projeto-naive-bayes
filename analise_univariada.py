@@ -26,6 +26,7 @@ from src.naive_bayes import PokemonNaiveBayes
 from src.plots import (
     plot_categorical_likelihood_ratio,
     plot_categorical_likelihoods,
+    plot_categorical_overview,
     plot_decision_boundary,
     plot_univariate_distributions,
 )
@@ -94,7 +95,9 @@ def secao_3_graficos(X_train, y_train, h1, h2, h3):
         cp = h.categorical_params_[col]
         plot_categorical_likelihoods(cp[0], cp[1], col)
         plot_categorical_likelihood_ratio(cp[0], cp[1], col)
+        plot_categorical_overview(cp[0], cp[1], col)
         print(f"  -> categorical_likelihood_{col}.png / categorical_likelihood_ratio_{col}.png")
+        print(f"  -> categorical_overview_{col}.png  (versão em formato de slide)")
 
     gp = h1.gaussian_params_["base_stat_total"]
     x_min = X_train["base_stat_total"].min() - 10

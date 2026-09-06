@@ -76,6 +76,46 @@ def plot_categorical_likelihoods(params_0, params_1, col_name, output_dir="docs/
     plt.close()
 
 
+def plot_categorical_overview(params_0, params_1, col_name, output_dir="docs/assets"):
+    """Versão em formato de slide de plot_categorical_likelihoods: mesmas
+    barras P(categoria | Y=0) x P(categoria | Y=1), mas com figura larga e
+    fontes grandes. As categorias seguem ordenadas por razão de
+    verossimilhança decrescente, então a leitura da esquerda para a direita
+    vai das mais favoráveis a Y=1 para as mais favoráveis a Y=0.
+
+    Gera um arquivo por característica: categorical_overview_<col_name>.png
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    vocab = params_0["vocab"]
+    lambdas = {cat: likelihood_ratio_categorical(cat, params_1, params_0) for cat in vocab}
+    categorias = sorted(vocab, key=lambda c: lambdas[c], reverse=True)
+    p0 = [categorical_pmf(c, params_0) for c in categorias]
+    p1 = [categorical_pmf(c, params_1) for c in categorias]
+
+    x = np.arange(len(categorias))
+    largura = 0.4
+    fig, ax = plt.subplots(figsize=(max(9.0, len(categorias) * 0.85), 7.5))
+    ax.bar(x - largura / 2, p0, width=largura, label='Comum (Y=0)', color='dodgerblue')
+    ax.bar(x + largura / 2, p1, width=largura, label='Lendário/Mítico (Y=1)', color='crimson')
+
+    ax.set_ylim(0, max(max(p0), max(p1)) * 1.10)
+    ax.set_xticks(x)
+    ax.set_xticklabels(categorias, rotation=45, ha='right', fontsize=15)
+    ax.set_title(f'P({col_name} | Y) - distribuição em cada classe',
+                 fontsize=20, fontweight='bold')
+    ax.set_ylabel('P(categoria | Y)', fontsize=15)
+    ax.tick_params(axis='y', labelsize=13)
+    ax.legend(fontsize=15)
+    ax.grid(True, axis='y', linestyle='--', alpha=0.6)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+
+    caminho = os.path.join(output_dir, f'categorical_overview_{col_name}.png')
+    fig.savefig(caminho, dpi=200)
+    plt.close(fig)
+    return caminho
+
+
 def plot_categorical_likelihood_ratio(params_0, params_1, col_name, output_dir="docs/assets"):
     """Gráfico de barras da razão de verossimilhança Λ por categoria, escala log."""
     os.makedirs(output_dir, exist_ok=True)
