@@ -146,7 +146,7 @@ $$P(Y = c \mid x_1, x_2, x_3) \propto P(Y = c) \prod_{j=1}^{3} p(x_j \mid Y = c)
 ### Cuidados de Implementação:
 * **Domínio Logarítmico:** para mitigar problemas de *underflow* numérico decorrentes da multiplicação de probabilidades muito pequenas:
   $$\hat{y} = \arg\max_{c} \left[ \log P(Y = c) + \sum_{j=1}^{3} \log p(x_j \mid Y = c) \right]$$
-* **Suavização de Laplace ($\alpha=1$):** aplicada nos atributos categóricos $X_2$ e $X_3$ para evitar o problema da probabilidade zero — `growth_rate` tem 3 categorias (`medium`, `fast`, `slow-then-very-fast`) sem nenhum lendário/mítico no treino; sem suavização, `P(categoria|Y=1)=0` anularia o posterior de qualquer Pokémon com esses valores, não importa a evidência das outras características.
+* **Suavização de Laplace ($\alpha=1$):** aplicada nos atributos categóricos $X_2$ e $X_3$ para evitar o problema da probabilidade zero — `growth_rate` tem 4 categorias (`medium`, `fast`, `slow-then-very-fast`, `fast-then-very-slow`) sem nenhum lendário/mítico no treino; sem suavização, `P(categoria|Y=1)=0` anularia o posterior de qualquer Pokémon com esses valores, não importa a evidência das outras características.
 
 ---
 
@@ -211,6 +211,7 @@ Numa base 88/12, um classificador que nunca aprende nada já acerta 88,1% só ch
 ├── docs/
 │   ├── assets/                          # GIF do banner e todos os gráficos gerados
 │   ├── estudo dirigido/                 # PDF do enunciado da atividade
+│   ├── roteiro_video.docx               # Roteiro cronometrado do vídeo (falas por slide)
 │   └── roteiro_video.md                 # Checklist dos 20 itens obrigatórios do vídeo
 ├── src/
 │   ├── data_loader.py                   # Download/leitura da base e divisão treino/teste
@@ -221,6 +222,7 @@ Numa base 88/12, um classificador que nunca aprende nada já acerta 88,1% só ch
 ├── main.py                              # Pipeline principal: treina e avalia o NB combinado
 ├── analise_univariada.py                # Análise isolada de X1, X2, X3 (§4 do enunciado)
 ├── avaliacao_final.py                   # Avaliação aprofundada: baseline, FP/FN, ROC, limiar
+├── prever.py                            # Predição de instâncias individuais, passo a passo
 ├── requirements.txt                     # Dependências da aplicação
 └── README.md                            # Esta documentação
 ```
@@ -240,6 +242,18 @@ python -m venv .venv
 .venv/bin/python avaliacao_final.py      # Avaliação aprofundada (§7): baseline, FP/FN, ROC
 ```
 
+### Testando instâncias individuais
+
+`prever.py` aplica o modelo já treinado a um Pokémon de cada vez e abre o cálculo passo a passo — prior, verossimilhança de cada característica, razão de verossimilhança $\Lambda(x)$ e o posterior normalizado:
+
+```bash
+.venv/bin/python prever.py Mew Cosmog Rayquaza          # pelo nome, com o rótulo real ao final
+.venv/bin/python prever.py --stats 680 --tipo Dragon --growth slow   # Pokémon hipotético
+.venv/bin/python prever.py --vocabulario                # valores categóricos aceitos
+```
+
+Ao buscar pelo nome, a saída informa se o Pokémon estava no treino ou no teste — um acerto em exemplo de treino não é evidência de generalização. Valores categóricos fora do vocabulário não geram erro: caem na probabilidade de categoria desconhecida da suavização de Laplace, e o script avisa quando isso acontece.
+
 Na primeira execução, `data_loader.py` baixa a base automaticamente do Kaggle via `kagglehub` e salva em `data/pokemon.csv`; execuções seguintes reutilizam o arquivo local.
 
 ---
@@ -248,7 +262,10 @@ Na primeira execução, `data_loader.py` baixa a base automaticamente do Kaggle 
 
 `<link a preencher após a gravação>`
 
-Roteiro com os 20 itens de conteúdo obrigatório (§10 do enunciado) e o material de apoio de cada um: [`docs/roteiro_video.md`](docs/roteiro_video.md).
+Dois documentos de apoio, complementares:
+
+- [`docs/roteiro_video.docx`](docs/roteiro_video.docx) — **roteiro cronometrado**: quem fala o quê, em qual slide e em que minuto, com orçamento de tempo por bloco (alvo 13:50 dentro do teto de 15:00).
+- [`docs/roteiro_video.md`](docs/roteiro_video.md) — **checklist** dos 20 itens de conteúdo obrigatório (§10 do enunciado) com o número, gráfico ou seção que sustenta cada um.
 
 ---
 

@@ -72,7 +72,7 @@ def secao_2_probabilidade_zero(X_train, y_train, h3):
         print(f"  {cat:<22}{p_sem:>28.4f}{p_com:>28.4f}")
 
     print(
-        "\n  >> Sem suavização, P(categoria|Y=1)=0 para essas 3 categorias. Como o "
+        f"\n  >> Sem suavização, P(categoria|Y=1)=0 para essas {len(zero_count)} categorias. Como o "
         "Naive Bayes soma log-probabilidades, log(0) = -infinito: QUALQUER Pokémon "
         "com uma dessas categorias em growth_rate seria classificado como Y=0 com "
         "certeza absoluta, não importa quão fortes sejam as evidências de "
