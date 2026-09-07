@@ -218,17 +218,38 @@ Numa base 88/12, um classificador que nunca aprende nada já acerta 88,1% só ch
 
 ### Instalação
 
+**Linux / macOS**
+
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
+**Windows (PowerShell ou Prompt de Comando)**
+
+```powershell
+py -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+```
+
 ### Execução
+
+**Linux / macOS**
 
 ```bash
 .venv/bin/python main.py                 # Treina o Naive Bayes combinado e avalia no teste
 .venv/bin/python analise_univariada.py   # Análises isoladas de X1, X2, X3 (§4)
 .venv/bin/python avaliacao_final.py      # Avaliação aprofundada (§7): baseline, FP/FN, ROC
+.venv/bin/python prever.py Mew           # Predição de um Pokémon, passo a passo (ver abaixo)
+```
+
+**Windows**
+
+```powershell
+.venv\Scripts\python main.py
+.venv\Scripts\python analise_univariada.py
+.venv\Scripts\python avaliacao_final.py
+.venv\Scripts\python prever.py Mew
 ```
 
 ### Testando instâncias individuais
